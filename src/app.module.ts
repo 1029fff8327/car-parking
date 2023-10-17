@@ -1,10 +1,29 @@
 import { Module } from '@nestjs/common';
-import { AppController } from './app.controller';
-import { AppService } from './app.service';
+import { SequelizeModule } from '@nestjs/sequelize';
+import { User } from './user/user.model';
+import { UserModule } from './user/user.module';
+import { AuthModule } from './auth/auth.module';
+import { CarsModule } from './cars/cars.module';
+import { UserController } from './user/user.controller';
+import { UsersService } from './user/user.service';
 
 @Module({
-  imports: [],
-  controllers: [AppController],
-  providers: [AppService],
+  controllers: [UserController],
+  providers: [UsersService],
+  imports: [
+    SequelizeModule.forRoot({
+      dialect: 'mysql',
+      host: process.env.MSQL_HOST,
+      port: Number(process.env.MSQL_PORT),
+      username: process.env.MSQL_USER,
+      password: process.env.MSQL_PASSWORD,
+      database: process.env.MSQL_DB,
+      models: [User],
+
+    }),
+    UserModule,
+    AuthModule,
+    CarsModule
+  ],
 })
 export class AppModule {}
